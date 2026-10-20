@@ -1,0 +1,39 @@
+name: release
+# Only in this public copy, not in the monorepo. A v* tag publishes the package to PyPI (Trusted
+# Publishing, no token) and then its metadata to the MCP Registry (GitHub OIDC). The tag must be
+# the package version, and server.json must say the same.
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: The tag is the package version
+        run: |
+          v=$(python3 -c "import re; print(re.search(r'__version__ = \"(.+?)\"', open('src/sanalert_mcp/__init__.py').read())[1])")
+          test "v$v" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME, package $v"; exit 1; }
+          python3 -c "import json, sys; d = json.load(open('server.json')); sys.exit(d['version'] != '$v')"
+      - run: uv build
+      - uses: pypa/gh-action-pypi-publish@release/v1
+  registry:
+    needs: pypi
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: curl -sL https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz | tar xz mcp-publisher
+      - run: ./mcp-publisher login github-oidc
+      - name: Publish (PyPI can take a minute to show a new release)
+        run: |
+          for i in 1 2 3 4 5 6; do ./mcp-publisher publish && exit 0; sleep 30; done
+          exit 1
