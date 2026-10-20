@@ -1,0 +1,58 @@
+{
+ "notice": {
+  "pl": "SanAlert nie jest oficjalnym systemem ostrzegania ani kanałem administracji publicznej. Nie zastępuje syren, Alertu RCB ani komunikatów służb. Informacje pochodzą ze źródeł otwartych i mogą być niepełne lub opóźnione.",
+  "en": "SanAlert is not an official warning system or a government channel. It does not replace sirens, RCB alerts or instructions from the authorities. Information comes from open sources and may be incomplete or delayed.",
+  "uk": "SanAlert не є офіційною системою оповіщення чи каналом державних органів. Він не замінює сирен, Alert RCB і вказівок служб. Інформація походить із відкритих джерел і може бути неповною або запізнюватися."
+ },
+ "attribution": [
+  {
+   "name": "NEPTUN",
+   "url": "https://neptun.in.ua",
+   "role": "tracked objects, UA alarms"
+  },
+  {
+   "name": "RCB",
+   "url": "https://www.gov.pl/web/rcb",
+   "role": "official layer"
+  },
+  {
+   "name": "RSO",
+   "url": "https://komunikaty.tvp.pl",
+   "role": "official layer"
+  },
+  {
+   "name": "OCHA, SSPE Kartographia (geoBoundaries)",
+   "url": "https://www.geoboundaries.org",
+   "role": "raion boundaries of Ukraine, CC BY 3.0 IGO"
+  },
+  {
+   "name": "adsb.lol",
+   "url": "https://adsb.lol",
+   "role": "military aircraft (ADS-B), ODbL 1.0"
+  },
+  {
+   "name": "GUGiK (PRG)",
+   "url": "https://dane.gov.pl/pl/dataset/726",
+   "role": "powiat boundaries, CC BY 4.0 — opracowano na podstawie materiałów państwowego zasobu geodezyjnego i kartograficznego"
+  },
+  {
+   "name": "Państwowa Agencja Atomistyki",
+   "url": "https://monitoring.paa.gov.pl/maps-portal/",
+   "role": "gamma dose rate, CC BY 3.0 PL"
+  }
+ ],
+ "pass_through": {
+  "instruction": "Whoever shows or repeats this data keeps `notice` visible with it (in the reader's language: pl, en or uk) and a visible link to every `attribution` entry, unchanged, and does not present the data as their own or as official.",
+  "official_alarms": "Always refer readers to the official air-raid alarms: sirens, Alert RCB and the instructions of the authorities. SanAlert does not replace them (NEPTUN's API terms §5).",
+  "neptun": "This data includes NEPTUN data, or is built on it: the objects tracked over Ukraine, the air-raid alarms in its districts, and SanAlert's levels, night reports and record. Keep a visible link to https://neptun.in.ua next to it, for example with the text \"Дані: Карта повітряних тривог — NEPTUN\" (NEPTUN's API terms §3). NEPTUN's name and logo do not pass with the data (§7).",
+  "neptun_url": "https://neptun.in.ua",
+  "neptun_link_text": "Дані: Карта повітряних тривог — NEPTUN",
+  "no_data": "No data is never \"quiet\": when SanAlert cannot vouch for its levels, say \"no data\".",
+  "levels": "SanAlert's levels are its own inference from open sources, not official warnings: an object can change course. The official warnings are RCB's and RSO's.",
+  "terms": [
+   "https://sanalert.pl/en/terms/",
+   "https://neptun.in.ua/api-terms",
+   "https://api.sanalert.pl/v1/openapi.json"
+  ]
+ }
+}

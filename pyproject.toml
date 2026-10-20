@@ -1,0 +1,36 @@
+[project]
+name = "sanalert-mcp"
+dynamic = ["version"]
+description = "SanAlert's level for a place in Poland, for AI assistants, worked out on your own computer (an MCP server over stdio)."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Applied AI sp. z o.o.", email = "kontakt@appliedai.dev" }]
+requires-python = ">=3.12"
+# The same MCP SDK as SanAlert's API (api/pyproject.toml); httpx is already the SDK's own.
+dependencies = ["mcp>=2.3,<3", "httpx>=0.27,<1"]
+
+[project.scripts]
+sanalert-mcp = "sanalert_mcp.server:main"
+
+[project.urls]
+Homepage = "https://sanalert.pl/en/"
+Terms = "https://sanalert.pl/en/terms/"
+Privacy = "https://sanalert.pl/en/privacy/"
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/sanalert_mcp/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sanalert_mcp"]
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-asyncio>=0.24"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
