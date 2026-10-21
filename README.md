@@ -1,5 +1,7 @@
 # SanAlert for AI assistants
 
+<!-- mcp-name: io.github.plrojek/sanalert-mcp -->
+
 The unofficial threat level from the air for a place in Poland, for an AI assistant that can run a
 local MCP server (Claude Code, Claude Desktop and others). Ask it "what is the level in Przemyśl?"
 and the assistant gets the answer the website would show for that place. Not an official warning
@@ -54,9 +56,13 @@ It needs [uv](https://docs.astral.sh/uv/).
 Claude Code:
 
 ```sh
-claude mcp add sanalert -- uvx --from git+https://github.com/plrojek/sanalert-mcp sanalert-mcp
+claude mcp add sanalert -- uvx sanalert-mcp
 claude mcp add --transport http sanalert-poland https://api.sanalert.pl/mcp      # optional: the whole of Poland
 ```
+
+Or both at once, as a Claude Code plugin: `/plugin marketplace add plrojek/agent-skills`, then
+`/plugin install sanalert@plrojek`. Straight from GitHub instead of PyPI:
+`uvx --from git+https://github.com/plrojek/sanalert-mcp sanalert-mcp`.
 
 Claude Desktop (`claude_desktop_config.json`):
 
@@ -65,7 +71,7 @@ Claude Desktop (`claude_desktop_config.json`):
   "mcpServers": {
     "sanalert": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/plrojek/sanalert-mcp", "sanalert-mcp"]
+      "args": ["sanalert-mcp"]
     }
   }
 }
