@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.plrojek/sanalert-mcp",
+  "title": "SanAlert",
+  "description": "Unofficial threat level from the air for a place in Poland, worked out on your own computer.",
+  "repository": {
+    "url": "https://github.com/plrojek/sanalert-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://sanalert.pl/en/",
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "sanalert-mcp",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

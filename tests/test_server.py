@@ -317,3 +317,19 @@ async def test_without_the_grid_the_reason_is_the_grid_alone():
 async def test_english_names_for_towns_on_the_list():
     for name, town in (("Warsaw", "Warszawa"), ("Cracow", "Kraków"), ("krakow", "Kraków"), ("LODZ", "Łódź")):
         assert (await level(setup(FakeAPI()), place=name))["place"]["name"] == town
+
+
+def test_registry_metadata_matches_the_package():
+    """The MCP Registry checks that the PyPI README names the server (`mcp-name:`), and server.json
+    must carry the package's own version, or a release publishes metadata for the wrong build."""
+    import json
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    meta = json.loads((root / "server.json").read_text())
+    marker = re.search(r"mcp-name:\s*(\S+?)\s*-->", (root / "README.md").read_text())
+    assert marker and marker[1] == meta["name"] == "io.github.plrojek/sanalert-mcp"
+    assert meta["version"] == __version__
+    assert [(p["registryType"], p["identifier"], p["version"]) for p in meta["packages"]] == [("pypi", "sanalert-mcp", __version__)]
+    assert len(meta["description"]) <= 100

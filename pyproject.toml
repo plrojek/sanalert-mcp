@@ -15,6 +15,7 @@ sanalert-mcp = "sanalert_mcp.server:main"
 
 [project.urls]
 Homepage = "https://sanalert.pl/en/"
+Repository = "https://github.com/plrojek/sanalert-mcp"
 Terms = "https://sanalert.pl/en/terms/"
 Privacy = "https://sanalert.pl/en/privacy/"
 
