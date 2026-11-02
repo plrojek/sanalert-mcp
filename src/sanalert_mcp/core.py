@@ -93,18 +93,24 @@ def area(it: dict) -> list[str]:
     return rest if isinstance(rest, list) else it.get("regions") or []
 
 
-def current_official(state: dict | None, voivodeship: str | None, now: dt.datetime) -> list[dict]:
+def current_official(state: dict | None, voivodeship: str | None, now: dt.datetime, full: bool = False) -> list[dict]:
     """Official messages in force for the voivodeship (rule 4, `in_force` and `area`). A message
     narrowed to powiats still counts for its whole voivodeship here: this says "for the voivodeship",
-    never "for you"."""
+    never "for you". `full` adds what the remote MCP server gives for a message (its class, text,
+    voivodeships in force and powiats): the local MCP server asks for it; Home Assistant keeps its
+    attributes small."""
     if not state or not voivodeship:
         return []
     out = []
     for it in state.get("official") or []:
         if not isinstance(it, dict) or not in_force(it, now) or voivodeship not in area(it):
             continue
-        out.append({"source": it.get("source"), "tier": TIER.get(it.get("class")), "title": it.get("title"),
-                    "url": it.get("url"), "first_seen": it.get("first_seen")})
+        m = {"source": it.get("source"), "tier": TIER.get(it.get("class")), "title": it.get("title"),
+             "url": it.get("url"), "first_seen": it.get("first_seen")}
+        if full:
+            m.update({"class": it.get("class"), "text": it.get("text"), "regions_in_force": area(it),
+                      "powiats": it.get("powiats") or []})
+        out.append(m)
     return out
 
 
@@ -254,12 +260,18 @@ def notice(state: dict | None, lang: str) -> str | None:
     return n.get(lang) or n.get("en") or n.get("pl")
 
 
-def attribution(state: dict | None) -> str:
+def _role(a: dict, lang: str) -> str | None:
+    """The entry's role in the reader's language (`roles`, API 0.26.3), else the English `role`."""
+    roles = a.get("roles") if isinstance(a.get("roles"), dict) else {}
+    return roles.get(lang) or a.get("role")
+
+
+def attribution(state: dict | None, lang: str = "en") -> str:
     """Rule 1: every source, with its link (NEPTUN's link is a condition of using its data), and its
-    role when the state gives one, "name — role": the role carries the licence (CC BY 4.0, ODbL,
-    CC BY 3.0 IGO)."""
+    role when the state gives one, "name — role", in the reader's language when the state has it:
+    the role carries the licence (CC BY 4.0, ODbL, CC BY 3.0 IGO)."""
     items = [a for a in (state or {}).get("attribution") or [] if isinstance(a, dict) and a.get("name")]
-    named = ", ".join(f"{a['name']}{' — ' + a['role'] if a.get('role') else ''} ({a.get('url')})" for a in items)
+    named = ", ".join(f"{a['name']}{' — ' + r if (r := _role(a, lang)) else ''} ({a.get('url')})" for a in items)
     return "SanAlert (sanalert.pl), " + (named or "NEPTUN (https://neptun.in.ua)")
 
 
@@ -296,5 +308,5 @@ def summary(state: dict | None, cell: str, voivodeship: str | None, now: dt.date
         # None, not [], when the official layer cannot be told: an old document is not "no message".
         "official": current_official(state, voivodeship, now) if official_available(state, now) else None,
         "notice": notice(state, lang),
-        "attribution": attribution(state),
+        "attribution": attribution(state, lang),
     }

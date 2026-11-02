@@ -333,3 +333,54 @@ def test_registry_metadata_matches_the_package():
     assert meta["version"] == __version__
     assert [(p["registryType"], p["identifier"], p["version"]) for p in meta["packages"]] == [("pypi", "sanalert-mcp", __version__)]
     assert len(meta["description"]) <= 100
+
+
+def test_1_1_codes_expiry_full_official_roles_and_the_towns_resource():
+    """1.1.0 (copy cut, AX; Paweł 01.11): additive only. No-data reasons get codes beside the sentences,
+    rule 2 becomes a time (`expires_at`), official messages get the remote server's fields, roles come in
+    the asked language, and the towns can be read as a resource."""
+    import asyncio
+    import datetime as dt
+    import json
+
+    from sanalert_mcp import server
+    now = dt.datetime(2026, 11, 1, 18, 0, tzinfo=dt.timezone.utc)
+    stamp = now.isoformat().replace("+00:00", "Z")
+    cell = server.core.cell_id(51.14, 23.47)
+    msg = {"source": "rcb", "class": "precaution", "title": "Stopień 1 z 3", "text": "Treść.", "url": "u",
+           "date": "2026-11-01", "first_seen": stamp, "regions": ["lubelskie"], "powiats": ["0602"]}
+    state = {"generated_at": stamp, "levels_valid": True, "health": {"status": "ok"}, "cells": {},
+             "official": [msg], "notice": {"pl": "n", "en": "n", "uk": "n"},
+             "attribution": [{"name": "NEPTUN", "url": "https://neptun.in.ua", "role": "tracked objects, UA alarms",
+                              "roles": {"pl": "śledzone obiekty, alarmy w Ukrainie", "en": "tracked objects, UA alarms",
+                                        "uk": "відстежувані об’єкти, тривоги в Україні"}}]}
+    out = server.answer(state, None, {cell: "lubelskie"}, "Chełm", 51.14, 23.47, "pl", now)
+    assert out["no_data_codes"] == [] and out["expires_at"] == "2026-11-01T18:01:00Z"
+    official = out["official"][0]
+    assert {"source", "tier", "title", "url", "first_seen"} <= set(official)                  # 1.0's fields stay
+    assert official["class"] == "precaution" and official["text"] == "Treść." and official["powiats"] == ["0602"]
+    assert official["regions_in_force"] == ["lubelskie"]
+    old = dict(state, generated_at=(now - dt.timedelta(minutes=5)).isoformat().replace("+00:00", "Z"), levels_valid=False)
+    blind = server.answer(old, None, {cell: "lubelskie"}, "Chełm", 51.14, 23.47, "en", now)
+    assert blind["level"] == "no_data" and blind["no_data_codes"] == ["levels_not_valid", "stale"]
+    assert len(blind["no_data_reasons"]) == 2                                                  # the sentences stay
+    assert server.answer(None, None, None, None, 51.14, 23.47, "en", now)["no_data_codes"] == ["grid_unreadable"]
+    assert "śledzone obiekty" in server.core.attribution(state, "pl") and "tracked objects" in server.core.attribution(state)
+    mcp = server.build()
+    listed = asyncio.run(mcp.list_resources())
+    assert any(str(r.uri) == "sanalert://towns" for r in listed)
+    body = asyncio.run(mcp.read_resource("sanalert://towns"))
+    towns = json.loads(list(body)[0].content)
+    assert {"name": "Chełm", "latitude": 51.133, "longitude": 23.472}.keys() <= towns[0].keys() and len(towns) == len(server.TOWNS)
+
+
+def test_the_levels_resource_says_what_each_level_means_in_each_language():
+    import asyncio
+    import json
+
+    from sanalert_mcp import server
+    mcp = server.build()
+    body = json.loads(list(asyncio.run(mcp.read_resource("sanalert://levels")))[0].content)
+    assert set(body["levels"]) == {"quiet", "activity", "approaching", "near", "unknown"}
+    assert body["levels"]["approaching"]["pl"]["name"] == "Zbliża się" and body["levels"]["unknown"]["en"]["name"] == "No data"
+    assert all(body["levels"][k][lang]["meaning"] for k in body["levels"] for lang in ("pl", "en", "uk"))
