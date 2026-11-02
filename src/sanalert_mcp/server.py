@@ -197,27 +197,35 @@ class Feed:
             return self.grid["cells"]
 
 
-def _no_data_reasons(state: dict | None, state_error: str | None, grid_ok: bool, cell: str, held: float | None,
-                     now: dt.datetime) -> list[str]:
+def _no_data(state: dict | None, state_error: str | None, grid_ok: bool, cell: str, held: float | None,
+             now: dt.datetime) -> list[tuple[str, str]]:
+    """Why there is no level, as (code, sentence). The codes are the remote server's where they mean the
+    same (`not_ready`, `levels_not_valid`, `health_unknown`, `stale`), so an assistant can act on them."""
     if not grid_ok:                             # the state is not even fetched then
-        return ["SanAlert's grid could not be read, so the place's square is not known"]
-    reasons = [state_error] if state_error else []
+        return [("grid_unreadable", "SanAlert's grid could not be read, so the place's square is not known")]
+    reasons = [("state_unreadable", state_error)] if state_error else []
     if not state:
-        return reasons or ["no state yet"]
+        return reasons or [("not_ready", "no state yet")]
     if held is not None and held > core.MAX_AGE_S:
-        reasons.append("no new state for more than 60 seconds")
+        reasons.append(("stale", "no new state for more than 60 seconds"))
     if state.get("levels_valid") is not True:
-        reasons.append("SanAlert's levels are not valid right now")
+        reasons.append(("levels_not_valid", "SanAlert's levels are not valid right now"))
     if (state.get("health") or {}).get("status") == "unknown":
-        reasons.append("SanAlert's sources are down")
+        reasons.append(("health_unknown", "SanAlert's sources are down"))
     age = core.age_s(state, now)
     if age is None:
-        reasons.append("the state carries no time")
+        reasons.append(("no_time", "the state carries no time"))
     elif age > core.MAX_AGE_S:
-        reasons.append("the state is older than 60 seconds")
+        reasons.append(("stale", "the state is older than 60 seconds"))
     if ((state.get("cells") or {}).get(cell) or {}).get("level", "quiet") not in core.LEVELS:
-        reasons.append("the state gives this place a level this version does not know")
+        reasons.append(("unknown_level", "the state gives this place a level this version does not know"))
     return reasons
+
+
+def _expires(state: dict | None) -> str | None:
+    """Rule 2 as a time: after this the answer is no data, whatever it said (generated_at + 60 s)."""
+    at = core._parse((state or {}).get("generated_at"))
+    return (at + dt.timedelta(seconds=core.MAX_AGE_S)).isoformat().replace("+00:00", "Z") if at else None
 
 
 def answer(state: dict | None, state_error: str | None, cells: dict[str, str] | None, town: str | None,
@@ -249,11 +257,18 @@ def answer(state: dict | None, state_error: str | None, cells: dict[str, str] | 
         "level_name": s["level_name"],
         "say": s["reason"],
         "data": data,
-        "no_data_reasons": _no_data_reasons(state, state_error, grid_ok, cell, held, now) if blind else [],
     }
+    why = _no_data(state, state_error, grid_ok, cell, held, now) if blind else []
+    out["no_data_reasons"] = [sentence for _, sentence in why]
+    out["no_data_codes"] = list(dict.fromkeys(code for code, _ in why))     # 1.1.0, beside the sentences
     for k in ("rank", "reason_code", "kind", "km", "eta_min", "course_known", "lost_at", "oblast", "raion", "threat",
               "risk", "confidence", "degraded", "data_age_s", "generated_at"):
         out[k] = s[k]
+    out["expires_at"] = _expires(current) if grid_ok else None
+    # The remote server's shape of a message (1.1.0: class, text, voivodeships in force, powiats), beside
+    # the fields 1.0 gave; still for the voivodeship, never "for you".
+    if s["official"] is not None and voivodeship and s["level"] != "out_of_range":
+        s["official"] = core.current_official(current, voivodeship, now, full=True)
     out["official"] = s["official"]
     out["official_note"] = OFFICIAL_NOTE
     out["answer_rules"] = ANSWER_RULES
@@ -290,6 +305,20 @@ def build(feed: Feed | None = None,
             # Valid JSON of the wrong shape: no data, with everything that must stay with it.
             return answer(None, "SanAlert's API sent a document that could not be read", cells, town, lat, lon,
                           language, at)
+
+    @mcp.resource("sanalert://levels", name="levels", title="What SanAlert's levels mean", mime_type="application/json",
+                  description="Each level's name and meaning in pl, en and uk: the same words as "
+                              "sanalert.pl/jak-to-dziala/#poziomy. Explain a level with these words; a level is "
+                              "SanAlert's inference, never an official warning.")
+    def levels() -> str:
+        return _PKG.joinpath("levels.json").read_text(encoding="utf-8")
+
+    @mcp.resource("sanalert://towns", name="towns", title="SanAlert's towns", mime_type="application/json",
+                  description="The towns `place` accepts, with their coordinates: the website's list. Read it "
+                              "instead of learning the list from an error.")
+    def towns() -> str:
+        return json.dumps([{"name": t["name"], "latitude": t["lat"], "longitude": t["lon"]} for t in TOWNS],
+                          ensure_ascii=False)
 
     return mcp
 

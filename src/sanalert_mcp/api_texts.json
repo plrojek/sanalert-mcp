@@ -8,37 +8,72 @@
   {
    "name": "NEPTUN",
    "url": "https://neptun.in.ua",
-   "role": "tracked objects, UA alarms"
+   "role": "tracked objects, UA alarms",
+   "roles": {
+    "pl": "śledzone obiekty, alarmy w Ukrainie",
+    "en": "tracked objects, UA alarms",
+    "uk": "відстежувані об’єкти, тривоги в Україні"
+   }
   },
   {
    "name": "RCB",
    "url": "https://www.gov.pl/web/rcb",
-   "role": "official layer"
+   "role": "official layer",
+   "roles": {
+    "pl": "warstwa oficjalna",
+    "en": "official layer",
+    "uk": "офіційний шар"
+   }
   },
   {
    "name": "RSO",
    "url": "https://komunikaty.tvp.pl",
-   "role": "official layer"
+   "role": "official layer",
+   "roles": {
+    "pl": "warstwa oficjalna",
+    "en": "official layer",
+    "uk": "офіційний шар"
+   }
   },
   {
    "name": "OCHA, SSPE Kartographia (geoBoundaries)",
    "url": "https://www.geoboundaries.org",
-   "role": "raion boundaries of Ukraine, CC BY 3.0 IGO"
+   "role": "raion boundaries of Ukraine, CC BY 3.0 IGO",
+   "roles": {
+    "pl": "granice rejonów Ukrainy, CC BY 3.0 IGO",
+    "en": "raion boundaries of Ukraine, CC BY 3.0 IGO",
+    "uk": "межі районів України, CC BY 3.0 IGO"
+   }
   },
   {
    "name": "adsb.lol",
    "url": "https://adsb.lol",
-   "role": "military aircraft (ADS-B), ODbL 1.0"
+   "role": "military aircraft (ADS-B), ODbL 1.0",
+   "roles": {
+    "pl": "samoloty wojskowe (ADS-B), ODbL 1.0",
+    "en": "military aircraft (ADS-B), ODbL 1.0",
+    "uk": "військові літаки (ADS-B), ODbL 1.0"
+   }
   },
   {
    "name": "GUGiK (PRG)",
    "url": "https://dane.gov.pl/pl/dataset/726",
-   "role": "powiat boundaries, CC BY 4.0 — opracowano na podstawie materiałów państwowego zasobu geodezyjnego i kartograficznego"
+   "role": "powiat boundaries, CC BY 4.0 — opracowano na podstawie materiałów państwowego zasobu geodezyjnego i kartograficznego",
+   "roles": {
+    "pl": "granice powiatów, CC BY 4.0 — opracowano na podstawie materiałów państwowego zasobu geodezyjnego i kartograficznego",
+    "en": "powiat boundaries, CC BY 4.0 — opracowano na podstawie materiałów państwowego zasobu geodezyjnego i kartograficznego",
+    "uk": "межі повітів, CC BY 4.0 — opracowano na podstawie materiałów państwowego zasobu geodezyjnego i kartograficznego"
+   }
   },
   {
    "name": "Państwowa Agencja Atomistyki",
    "url": "https://monitoring.paa.gov.pl/maps-portal/",
-   "role": "gamma dose rate, CC BY 3.0 PL"
+   "role": "gamma dose rate, CC BY 3.0 PL",
+   "roles": {
+    "pl": "moc dawki promieniowania gamma, CC BY 3.0 PL",
+    "en": "gamma dose rate, CC BY 3.0 PL",
+    "uk": "потужність дози гамма-випромінювання, CC BY 3.0 PL"
+   }
   }
  ],
  "pass_through": {

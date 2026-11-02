@@ -1,0 +1,77 @@
+{
+ "v": 1,
+ "source": "https://sanalert.pl/jak-to-dziala/#poziomy",
+ "note": "SanAlert's levels are its own inference, not an official warning; RCB's tiers 1-3 are not levels.",
+ "levels": {
+  "quiet": {
+   "pl": {
+    "name": "Spokój",
+    "meaning": "Źródła działają. Do około 150 km stąd nic nie śledzimy, za granicą w pobliżu nie ma alarmu, a nic, co leci w tę stronę, nie jest bliżej niż około godzinę lotu."
+   },
+   "en": {
+    "name": "Quiet",
+    "meaning": "The sources are working. Nothing is tracked within about 150 km, there is no alarm across the border nearby, and nothing heading this way is closer than about an hour's flight."
+   },
+   "uk": {
+    "name": "Спокій",
+    "meaning": "Джерела працюють. У радіусі приблизно 150 км нічого не відстежується, поблизу за кордоном немає тривоги, і ніщо, що летить у цей бік, не ближче ніж приблизно година льоту."
+   }
+  },
+  "activity": {
+   "pl": {
+    "name": "Aktywność",
+    "meaning": "W promieniu około 150 km są obiekty, które nie lecą w tę stronę albo ich kierunek jest nieznany, albo trwa alarm w rejonie Ukrainy do około 100 km stąd. Albo coś leci w tę stronę, ale jest około 30–60 minut lotu stąd albo jeszcze nie widzieliśmy, żeby się przybliżało. Albo źródła straciły ślad obiektu, który tu leciał."
+   },
+   "en": {
+    "name": "Activity",
+    "meaning": "There are objects within about 150 km that are not flying this way or whose direction is unknown, or an alarm in a raion of Ukraine within about 100 km of here. Or something is heading this way but is about 30–60 minutes out, or we have not yet seen it come closer. Or the sources lost track of an object that was heading here."
+   },
+   "uk": {
+    "name": "Активність",
+    "meaning": "У радіусі приблизно 150 км є об’єкти, які не летять у цей бік або напрямок яких невідомий, або триває тривога в районі України до приблизно 100 км звідси. Або щось прямує сюди, але до нього приблизно 30–60 хвилин льоту, або ми ще не бачили, щоб воно наближалося. Або джерела втратили слід об’єкта, який летів сюди."
+   }
+  },
+  "approaching": {
+   "pl": {
+    "name": "Zbliża się",
+    "meaning": "Obiekt leci w stronę Twojego miejsca i przy typowej prędkości dotarłby w ciągu około 30 minut. Dron musi się przy tym już przybliżyć: sam przewidywany kurs nie wystarczy, bo drony często zmieniają kurs, a ich kurs bywa tylko przypuszczeniem. Pocisk o nieznanym kierunku liczymy już w promieniu około 150 km."
+   },
+   "en": {
+    "name": "Approaching",
+    "meaning": "An object is heading for your place and at its typical speed would arrive within about 30 minutes. A drone must also have been seen coming closer: a predicted course alone is not enough, because drones often change course and their course is often only a guess. A missile whose direction is unknown counts within about 150 km."
+   },
+   "uk": {
+    "name": "Наближається",
+    "meaning": "Об’єкт прямує до вашого місця і за своєї типової швидкості долетів би приблизно за 30 хвилин. Дрон при цьому має вже помітно наблизитися: самого передбачуваного курсу недостатньо, бо дрони часто змінюють курс, а їхній курс часто лише припущення. Ракету з невідомим напрямком ми враховуємо вже в радіусі приблизно 150 км."
+   }
+  },
+  "near": {
+   "pl": {
+    "name": "Blisko",
+    "meaning": "Obiekt jest w odległości około 25 km albo mógłby dotrzeć w ciągu około 15 minut (dron: jeśli widzieliśmy, że się przybliża). Wymaga co najmniej średniej pewności, a przy średniej także dwóch kolejnych obserwacji."
+   },
+   "en": {
+    "name": "Near",
+    "meaning": "An object is within about 25 km, or could arrive within about 15 minutes (a drone: if we have seen it come closer). It needs at least medium confidence, and at medium confidence also two sightings in a row."
+   },
+   "uk": {
+    "name": "Близько",
+    "meaning": "Об’єкт перебуває на відстані близько 25 км або міг би долетіти приблизно за 15 хвилин (дрон — якщо ми бачили, що він наближається). Потрібна щонайменше середня впевненість, а за середньої — ще й два спостереження поспіль."
+   }
+  },
+  "unknown": {
+   "pl": {
+    "name": "Brak danych",
+    "meaning": "Nie widzimy obiektów, bo źródło nie odpowiada. Wtedy nie wiemy, czy jest spokojnie, i tak to pokazujemy."
+   },
+   "en": {
+    "name": "No data",
+    "meaning": "We cannot see objects because the source is not answering. Then we do not know whether it is quiet, and that is what we show."
+   },
+   "uk": {
+    "name": "Немає даних",
+    "meaning": "Ми не бачимо об’єктів, бо джерело не відповідає. Тоді ми не знаємо, чи спокійно, і саме так це показуємо."
+   }
+  }
+ }
+}

@@ -5,7 +5,7 @@
 The unofficial threat level from the air for a place in Poland, for an AI assistant that can run a
 local MCP server (Claude Code, Claude Desktop and others). Ask it "what is the level in Przemyśl?"
 and the assistant gets the answer the website would show for that place. Not an official warning
-system: it does not replace sirens, Alert RCB or instructions from the services.
+system: it does not replace sirens, Alert RCB or instructions from the authorities.
 
 ## What it does, and what it sends
 
@@ -33,10 +33,12 @@ the rest of its list; Polish letters optional, and Warsaw and Cracow work too), 
 | `level_name`, `say` | the level's name and the website's sentence under it, in the chosen language |
 | `reason_code`, `kind`, `km`, `eta_min`, `course_known`, `lost_at`, `oblast`, `raion`, `threat` | what raised the level, as the website shows it |
 | `risk`, `confidence`, `degraded` | as in the state; `degraded` means the data may be delayed |
-| `data`, `no_data_reasons`, `data_age_s`, `generated_at` | whether the level can be trusted now, and why not |
+| `data`, `no_data_reasons`, `no_data_codes`, `data_age_s`, `generated_at`, `expires_at` | whether the level can be trusted now, and why not: `no_data_codes` (1.1.0) are `not_ready`, `stale`, `levels_not_valid`, `health_unknown` (as the remote server's), `grid_unreadable`, `state_unreadable`, `no_time`, `unknown_level`; after `expires_at` (`generated_at` + 60 s) the answer is no data |
 | `place` | the town or the point, its square (`cell`) and voivodeship |
-| `official` | RCB and RSO messages in force for the voivodeship; `null` while that cannot be told |
+| `official` | RCB and RSO messages in force for the voivodeship; `null` while that cannot be told. Since 1.1.0 each also has the remote server's `class`, `text`, `regions_in_force` and `powiats` |
 | `notice`, `attribution`, `pass_through` | what has to stay with the data wherever it is shown |
+
+The towns `place` accepts are also a resource, `sanalert://towns` (1.1.0), with their coordinates.
 
 **Blind is not calm.** When the document is missing, cannot be read or is older than 60 s, or the
 grid cannot be read, the level is `no_data`, never `quiet`, and `say` says so. The age is never less
